@@ -90,7 +90,7 @@
 #   define EV_USE_NANOSLEEP 0
 # endif
 
-# if HAVE_SELECT && HAVE_SYS_SELECT_H
+# if HAVE_SELECT && (HAVE_SYS_SELECT_H || HAVE_WINSOCK_H)
 #  ifndef EV_USE_SELECT
 #   define EV_USE_SELECT EV_FEATURE_BACKENDS
 #  endif
@@ -1869,13 +1869,19 @@ static EV_ATOMIC_T have_monotonic; /* did clock_gettime (CLOCK_MONOTONIC) work? 
 #endif
 
 #ifndef EV_FD_TO_WIN32_HANDLE
-# define EV_FD_TO_WIN32_HANDLE(fd) _get_osfhandle (fd)
+# define EV_FD_TO_WIN32_HANDLE(fd) fd
 #endif
 #ifndef EV_WIN32_HANDLE_TO_FD
-# define EV_WIN32_HANDLE_TO_FD(handle) _open_osfhandle (handle, 0)
+# define EV_WIN32_HANDLE_TO_FD(handle) handle
 #endif
-#ifndef EV_WIN32_CLOSE_FD
-# define EV_WIN32_CLOSE_FD(fd) close (fd)
+#ifdef _WIN32
+  #ifndef EV_WIN32_CLOSE_FD
+  # define EV_WIN32_CLOSE_FD(fd) closesocket (fd)
+  #endif
+#else
+  #ifndef EV_WIN32_CLOSE_FD
+  # define EV_WIN32_CLOSE_FD(fd) close (fd)
+  #endif
 #endif
 
 #ifdef _WIN32

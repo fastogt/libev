@@ -6,7 +6,8 @@ AC_CHECK_HEADERS(sys/inotify.h sys/epoll.h sys/event.h port.h poll.h sys/timerfd
 AC_CHECK_HEADERS(sys/select.h sys/eventfd.h sys/signalfd.h linux/aio_abi.h linux/fs.h)
  
 AC_CHECK_FUNCS(inotify_init epoll_ctl kqueue port_create poll select eventfd signalfd)
- 
+AC_CHECK_FUNC(select, [], [AC_CHECK_HEADERS(winsock.h, [AC_DEFINE(HAVE_SELECT, 1, Define to 1 if you have the 'select' function.)], [], [])])
+
 AC_CHECK_FUNCS(clock_gettime, [], [
    dnl on linux, try syscall wrapper first
    if test $(uname) = Linux; then
